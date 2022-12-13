@@ -27,12 +27,11 @@ namespace TeamProject
             day_income.Text = Get_income_of_the_day(date).ToString() + "원"; //현재 날짜 기준 일일 매출
             mon_income.Text = Get_income_of_the_month().ToString() + "원"; //현재 날짜 기준 월간 매출
         }
-        private string Convert_date(DateTime date_time) //날짜 형식 db방식으로 전환 ex) 22/12/11
+        private string Convert_date(DateTime date_time) //날짜 형식 db방식으로 전환 ex) 2022-12-11
         {
             string text;
             string year = date_time.Year.ToString();
-            year = year.Substring(2, 2);
-            text = year + '/' + date_time.Month.ToString() + '/' + date_time.Day.ToString();
+            text = year + '-' + date_time.Month.ToString() + '-' + date_time.Day.ToString();
             return text;
         }
 
@@ -136,19 +135,18 @@ namespace TeamProject
             }
         }
         
-        private int Get_menu_price(int menu_id) //메뉴 가격 data 꺼내오는 기능
+        private int Get_menu_price(int menu_id) //메뉴 가격 data 반환
         {
             int result = 0;
             odpConn.ConnectionString = connClass.GetConnStr();
             odpConn.Open();
-            string strqry = "SELECT * from menu WHERE menu_id=:id";
+            string strqry = "SELECT * from foods WHERE id=:id";
             OracleCommand OraCmdS = new OracleCommand(strqry, odpConn);
-            //MessageBox.Show(menu_id.ToString());
             OraCmdS.Parameters.Add("id", OracleDbType.Int32).Value = menu_id;
             OracleDataReader rdr = OraCmdS.ExecuteReader();
             while (rdr.Read())
             {
-                result = Convert.ToInt32(rdr["menu_price"]);
+                result = Convert.ToInt32(rdr["foodvalue"]);
             }
             odpConn.Close();
             rdr.Close();

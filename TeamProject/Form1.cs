@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Threading;
 
 namespace TeamProject
 {
@@ -16,6 +17,8 @@ namespace TeamProject
     {
         ConnInformation connClass = new ConnInformation();
         private OracleConnection odpConn = new OracleConnection();
+        private OracleConnection odpConn2 = new OracleConnection();
+        private int orderIndex = 0;
         public Form1()
         {
             InitializeComponent();
@@ -36,7 +39,8 @@ namespace TeamProject
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Get_owner_id("oqwfhhpiow"); //임시 id 사용
+            orderIndex = Get_today_order_rows();
+            Get_owner_id(connClass.GetOwnerId()); //임시 id 사용
             string[] user_arr;
             int[] seat_arr;
             user_arr = Get_user_from_seat(); //select user_id from seat where is_on=1; 배열
@@ -140,6 +144,99 @@ namespace TeamProject
             string result = $"{hours:D2}:{minutes:D2}:{seconds:D2}";
             return result;
         }
+        private int Get_today_order_rows()  //당일 현재 주문 수량 반환
+        {
+            DateTime current = DateTime.Now;
+            string day = Convert_date(current);
+            odpConn.ConnectionString = connClass.GetConnStr();
+            odpConn.Open();
+            string strqry = "SELECT * from orderlist WHERE orderdate=:setd";
+            OracleCommand OraCmdS = new OracleCommand(strqry, odpConn);
+            OraCmdS.Parameters.Add("setd", OracleDbType.Char).Value = day;
+            OracleDataReader rdr = OraCmdS.ExecuteReader();
+            int rows = 0;
+            while (rdr.Read())
+            {
+                rows++;
+            }
+            odpConn.Close();
+            rdr.Close() ;
+            return rows;
+        }
+        private void Print_new_order_rows(int olderIndex, int newIndex) //추가된 주문 정보 메세지박스 출력
+        {
+            DateTime current = DateTime.Now;
+            string day = Convert_date(current);
+            odpConn.ConnectionString = connClass.GetConnStr();
+            odpConn.Open();
+            string strqry = "SELECT * from orderlist WHERE orderdate=:setd";
+            OracleCommand OraCmdS = new OracleCommand(strqry, odpConn);
+            OraCmdS.Parameters.Add("setd", OracleDbType.Char).Value = day;
+            OracleDataReader rdr = OraCmdS.ExecuteReader();
+            int index = 0;
+            while (rdr.Read())
+            {
+                if (index == olderIndex)
+                {
+                    olderIndex++;
+                    if (olderIndex <= newIndex)
+                    {
+                        //출력
+                        int menu_id = Convert.ToInt32(rdr["menu_id"]); //menu_id
+                        int quantity = Convert.ToInt32(rdr["order_quantity"]); //order_quantity 
+                        string message = rdr["message"] as string; //message
+                        int seat_id = Convert.ToInt32(rdr["seat_id"]); //seat_id
+                        string menu_name = Get_menu_name(menu_id); //menu이름
+
+                        string print_to_messageBox = "새로운 주문 입니다.\n" +
+                            seat_id.ToString() + "번 자리에서 " + menu_name + "상품을 " + quantity.ToString() + "개 주문 하였습니다.\n" +
+                            "요구사항: " + message;
+                        MessageBox.Show(print_to_messageBox, "주문 확인");
+                    }
+                }
+                index++;
+            }
+            odpConn.Close();
+            rdr.Close();
+        }
+        private string Convert_date(DateTime date_time) //날짜 형식 db방식으로 전환 ex) 2022-12-11
+        {
+            string text;
+            string year = date_time.Year.ToString();
+            text = year + '-' + date_time.Month.ToString() + '-' + date_time.Day.ToString();
+            return text;
+        }
+        private void button1_Click_1(object sender, EventArgs e) //주문체크 버튼 클릭 시 작동
+        {
+            int curRows = Get_today_order_rows(); //버튼 클릭 시점 주문량
+            if (curRows > orderIndex) //추가로 주문이 들어온 경우
+            {
+                Print_new_order_rows(orderIndex, curRows);
+                orderIndex = curRows;
+            }
+            else                    //추가로 주문이 들어오지 않은 경우
+            {
+                MessageBox.Show("주문이 없습니다.");
+            }
+            
+        }
+        private string Get_menu_name(int menu_id) //메뉴 이름 data 반환
+        {
+            string result = "";
+            odpConn2.ConnectionString = connClass.GetConnStr();
+            odpConn2.Open();
+            string strqry = "SELECT * from foods WHERE id=:id";
+            OracleCommand OraCmdS = new OracleCommand(strqry, odpConn);
+            OraCmdS.Parameters.Add("id", OracleDbType.Int32).Value = menu_id;
+            OracleDataReader rdr2 = OraCmdS.ExecuteReader();
+            while (rdr2.Read())
+            {
+                result = rdr2["foodname"] as string;
+            }
+            odpConn2.Close();
+            rdr2.Close();
+            return result;
+        }
         private Label find_label_num(int s_num)
         {
             switch (s_num)
@@ -179,6 +276,7 @@ namespace TeamProject
             }
             return label16;
         }
+        
 
         private void label10_Click(object sender, EventArgs e)
         {
@@ -309,7 +407,6 @@ namespace TeamProject
         {
 
         }
-
 
        
     }

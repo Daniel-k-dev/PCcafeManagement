@@ -81,6 +81,7 @@ namespace TeamProject
             this.label61 = new System.Windows.Forms.Label();
             this.label62 = new System.Windows.Forms.Label();
             this.manageBtn = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // foodManageBtn
@@ -651,12 +652,23 @@ namespace TeamProject
             this.manageBtn.UseVisualStyleBackColor = false;
             this.manageBtn.Click += new System.EventHandler(this.manageBtn_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(927, 54);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(100, 42);
+            this.button1.TabIndex = 87;
+            this.button1.Text = "주문체크";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.DarkGray;
             this.ClientSize = new System.Drawing.Size(1039, 542);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.manageBtn);
             this.Controls.Add(this.label62);
             this.Controls.Add(this.label61);
@@ -785,6 +797,7 @@ namespace TeamProject
         private System.Windows.Forms.Label label61;
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.Button manageBtn;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -27,7 +27,7 @@ namespace TeamProject
             odpConn.Open();
             string strqry = "SELECT * FROM owner WHERE owner_id=:id";
             OracleCommand OraCmdS = new OracleCommand(strqry, odpConn);
-            OraCmdS.Parameters.Add("id", OracleDbType.Varchar2, 20).Value = "oqwfhhpiow";  //임시 owner id 사용
+            OraCmdS.Parameters.Add("id", OracleDbType.Varchar2, 20).Value = connClass.GetOwnerId();  //임시 owner id 사용
             OracleDataReader rdr = OraCmdS.ExecuteReader();
             while (rdr.Read())
             {

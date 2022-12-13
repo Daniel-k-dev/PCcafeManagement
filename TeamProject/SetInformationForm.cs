@@ -47,7 +47,7 @@ namespace TeamProject
             string strqry = "UPDATE owner SET email=:email WHERE owner_id=:id";
             OracleCommand OraCmd = new OracleCommand(strqry, odpConn);
             OraCmd.Parameters.Add("email", OracleDbType.Varchar2, 40).Value = textBox1.Text.Trim();
-            OraCmd.Parameters.Add("id", OracleDbType.Varchar2, 20).Value = "oqwfhhpiow"; //임시 owner id 사용
+            OraCmd.Parameters.Add("id", OracleDbType.Varchar2, 20).Value = connClass.GetOwnerId(); //임시 owner id 사용
             return OraCmd.ExecuteNonQuery();
         }
 
