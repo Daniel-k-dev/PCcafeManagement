@@ -26,13 +26,20 @@ namespace TeamProject
         {
             odpConn.ConnectionString = connClass.GetConnStr();
             odpConn.Open();
-            string strqry = "INSERT INTO menu VALUES (:id, :fname, :amm, :price)";
+            string strqry = "INSERT INTO FOODS VALUES (:id, :foodname, :foodcategory, :foodvalue, :img, :quntity)";
             OracleCommand OraCmd = new OracleCommand(strqry, odpConn);
+            
 
             OraCmd.Parameters.Add("id", OracleDbType.Int32, 20).Value = idTxt.Text.Trim();
-            OraCmd.Parameters.Add("fname", OracleDbType.Varchar2, 20).Value = nameTxt.Text.Trim();
-            OraCmd.Parameters.Add("amm", OracleDbType.Int32, 20).Value = ammTxt.Text.Trim();
-            OraCmd.Parameters.Add("price", OracleDbType.Int32, 20).Value = priceText.Text.Trim();
+            OraCmd.Parameters.Add("foodname ", OracleDbType.Varchar2, 20).Value = nameTxt.Text.Trim();
+            OraCmd.Parameters.Add("foodvalue", OracleDbType.Int32, 20).Value = priceText.Text.Trim();
+            OraCmd.Parameters.Add("quntity", OracleDbType.Int32, 20).Value = ammTxt.Text.Trim();
+            OraCmd.Parameters.Add("foodcategory ", OracleDbType.Varchar2, 20).Value = foodcategory.Text.Trim();
+            OraCmd.Parameters.Add("img", OracleDbType.Varchar2, 20).Value = imgPathTxt.Text.Trim();
+
+
+
+
             return OraCmd.ExecuteNonQuery(); //추가되는 행수 반환
         }
 
