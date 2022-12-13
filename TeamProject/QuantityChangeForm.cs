@@ -45,7 +45,7 @@ namespace TeamProject
         {
             odpConn.ConnectionString = connClass.GetConnStr();
             odpConn.Open();
-            string strqry = "UPDATE menu SET left =:amm WHERE menu_id =:id";
+            string strqry = "UPDATE FOODS SET QUNTITY =:amm WHERE ID =:id";
             OracleCommand OraCmd = new OracleCommand(strqry, odpConn);
             OraCmd.Parameters.Add("amm", OracleDbType.Int32, 20).Value = textBox1.Text.Trim();
             OraCmd.Parameters.Add("id", OracleDbType.Int32).Value = _parent.getintID;
